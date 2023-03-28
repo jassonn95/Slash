@@ -19,50 +19,52 @@ class SLASH_API ABaseCharacter : public ACharacter, public IHitInterface
 public:
 	ABaseCharacter();
 	virtual void Tick(float DeltaTime) override;
-	
+
 	UFUNCTION(BlueprintCallable)
-	void SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled);
+		void SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled);
 protected:
 	virtual void BeginPlay() override;
 	virtual void Attack();
 	virtual void Die();
 
-	/*
-	* Play Montage Functions
-	*/
 	virtual void PlayAttackMontage();
 	void PlayHitReactMontage(const FName& SectionName);
 	void DirectionalHitReact(const FVector& ImpactPoint);
+	void PlayHitsound(const FVector& ImpactPoint);
+	void SpawnHitParticles(const FVector& ImpactPoint);
+	virtual void HandleDamage(float DamageAmount);
 
 	UFUNCTION(BlueprintCallable)
-	virtual void AttackEnd();
+		virtual void AttackEnd();
 	virtual bool CanAttack();
+	bool IsAlive();
 
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
-	AWeapon* EquippedWeapon;
+		AWeapon* EquippedWeapon;
 
 	/*
 	* Animation Montages
 	*/
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
-	UAnimMontage* AttackMontage;
+		UAnimMontage* AttackMontage;
 
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
-	UAnimMontage* HitReactMontage;
+		UAnimMontage* HitReactMontage;
 
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
-	UAnimMontage* DeathMontage;
+		UAnimMontage* DeathMontage;
 
 	/*
 	* Components
 	*/
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	UAttributeComponent* Attributes;
+		UAttributeComponent* Attributes;
 
+private:
 	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundBase* HitSound;
+		USoundBase* HitSound;
 
 	UPROPERTY(EditAnywhere, Category = VisualEffects)
-	UParticleSystem* HitParticles;
+		UParticleSystem* HitParticles;
 };
