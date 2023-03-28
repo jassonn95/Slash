@@ -18,27 +18,19 @@ class SLASH_API AEnemy : public ABaseCharacter
 public:
 	AEnemy();
 	virtual void Tick(float DeltaTime) override;
-
 	void CheckPatrolTarget();
-
 	void CheckCombatTarget();
-
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 	virtual void GetHit_Implementation(const FVector& ImpactPoint) override;
-
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+	virtual void Destroyed() override;
 
 protected:
 	virtual void BeginPlay() override;
-
 	virtual void Die() override;
-
 	bool InTargetRange(AActor* Target, double Radius);
-
 	void MoveToTarget(AActor* Target);
-
 	AActor* ChoosePatrolTarget();
 
 	UFUNCTION()
@@ -56,6 +48,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	UPawnSensingComponent* PawnSensing;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class AWeapon> WeaponClass;
 
 	UPROPERTY()
 	AActor* CombatTarget;
