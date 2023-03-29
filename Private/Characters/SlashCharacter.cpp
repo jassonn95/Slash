@@ -84,7 +84,6 @@ void ASlashCharacter::Move(const FInputActionValue& Value)
 	AddMovementInput(ForwardDirection, MovementVector.Y);
 	const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 	AddMovementInput(RightDirection, MovementVector.X);
-	
 }
 
 void ASlashCharacter::Look(const FInputActionValue& Value)
@@ -104,6 +103,7 @@ void ASlashCharacter::Jump()
 void ASlashCharacter::GetHit_Implementation(const FVector& ImpactPoint)
 {
 	Super::GetHit_Implementation(ImpactPoint);
+	ActionState = EActionState::EAS_HitReaction;
 }
 
 void ASlashCharacter::EKeyPressed()
@@ -141,6 +141,7 @@ void ASlashCharacter::Attack()
 
 void ASlashCharacter::Dodge()
 {
+
 }
 
 void ASlashCharacter::EquipWeapon(AWeapon* Weapon)
@@ -217,6 +218,11 @@ void ASlashCharacter::PlayEquipMontage(const FName& SectionName)
 }
 
 void ASlashCharacter::FinishEquipping()
+{
+	ActionState = EActionState::EAS_Unoccupied;
+}
+
+void ASlashCharacter::HitReactEnd()
 {
 	ActionState = EActionState::EAS_Unoccupied;
 }
