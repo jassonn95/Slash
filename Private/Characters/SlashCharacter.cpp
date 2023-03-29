@@ -8,6 +8,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "Items/Item.h"
 #include "Items/Weapons/Weapon.h"
 #include "Animation/AnimMontage.h"
@@ -22,6 +23,12 @@ ASlashCharacter::ASlashCharacter()
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 400.f, 0.f);
+
+	GetMesh()->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
+	GetMesh()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
+	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Overlap);
+	GetMesh()->SetGenerateOverlapEvents(true);
 
 	// Creating Spring Arm / Camera Boom and attaching to root component.
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
@@ -52,9 +59,7 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 void ASlashCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	Tags.Add(FName("SlashCharacter"));
-
+	Tags.Add(FName("EngageableTarget"));
 
 	// Enhanced Input
 	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
@@ -94,6 +99,12 @@ void ASlashCharacter::Jump()
 {
 	if (ActionState != EActionState::EAS_Unoccupied) return;
 	Super::Jump();
+}
+
+void ASlashCharacter::GetHit_Implementation(const FVector& ImpactPoint)
+{
+	PlayHitsound(ImpactPoint);
+	SpawnHitParticles(ImpactPoint);
 }
 
 void ASlashCharacter::EKeyPressed()
