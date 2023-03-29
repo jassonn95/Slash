@@ -103,8 +103,7 @@ void ASlashCharacter::Jump()
 
 void ASlashCharacter::GetHit_Implementation(const FVector& ImpactPoint)
 {
-	PlayHitsound(ImpactPoint);
-	SpawnHitParticles(ImpactPoint);
+	Super::GetHit_Implementation(ImpactPoint);
 }
 
 void ASlashCharacter::EKeyPressed()
