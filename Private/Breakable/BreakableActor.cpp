@@ -23,19 +23,13 @@ ABreakableActor::ABreakableActor()
 	Capsule->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
 }
 
-void ABreakableActor::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
 void ABreakableActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
 
-void ABreakableActor::GetHit_Implementation(const FVector& ImpactPoint)
+void ABreakableActor::GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter)
 {
 	if (bBroken) return;
 	bBroken = true;
@@ -50,4 +44,10 @@ void ABreakableActor::GetHit_Implementation(const FVector& ImpactPoint)
 
 		World->SpawnActor<ATreasure>(TreasureClasses[Selection], Location, GetActorRotation());
 	}
+}
+
+void ABreakableActor::BeginPlay()
+{
+	Super::BeginPlay();
+	
 }
