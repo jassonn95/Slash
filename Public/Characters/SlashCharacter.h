@@ -83,7 +83,9 @@ protected:
 
 private:
 	void InitializeEnhancedInput();
+	bool IsUnoccupied();
 	void InitializeSlashOverlay();
+	void SetHUDHealth();
 
 	/* Character Components*/
 	UPROPERTY(VisibleAnywhere)
