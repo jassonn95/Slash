@@ -285,7 +285,7 @@ void ASlashCharacter::Die()
 
 bool ASlashCharacter::HasEnoughStamina()
 {
-	return Attributes && Attributes->GetStamina() > Attributes->GetDodgeCost();
+	return (Attributes) && (Attributes->GetStamina() >= Attributes->GetDodgeCost());
 }
 
 bool ASlashCharacter::IsOccupied()
