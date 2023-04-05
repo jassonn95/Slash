@@ -12,6 +12,7 @@ ABaseCharacter::ABaseCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	// Constructing components.
 	Attributes = CreateDefaultSubobject<UAttributeComponent>(TEXT("Attributes"));
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 }
@@ -84,6 +85,7 @@ void ABaseCharacter::StopAttackMontage()
 	}
 }
 
+// Warp = attacks will home in on target so it's more difficult to dodge.
 FVector ABaseCharacter::GetTranslationWarpTarget()
 {
 	if (CombatTarget == nullptr) return FVector();
@@ -97,6 +99,7 @@ FVector ABaseCharacter::GetTranslationWarpTarget()
 	return CombatTargetLocation + TargetToMe;
 }
 
+// Warp = attacks will home in on target so it's more difficult to dodge.
 FVector ABaseCharacter::GetRotationWarpTarget()
 {
 	if (CombatTarget)
