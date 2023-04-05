@@ -28,6 +28,7 @@ ASlashCharacter::ASlashCharacter()
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 400.f, 0.f);
 
+	// Setting collision for mesh.
 	GetMesh()->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
 	GetMesh()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
@@ -46,6 +47,7 @@ ASlashCharacter::ASlashCharacter()
 
 void ASlashCharacter::Tick(float DeltaTime)
 {
+	// Regenerating stamina + updating in overlay (stamina bar).
 	if (Attributes && SlashOverlay)
 	{
 		Attributes->RegenStamina(DeltaTime);
@@ -107,6 +109,7 @@ void ASlashCharacter::Jump()
 	Super::Jump();
 }
 
+// Updating health values and the health bar in the HUD.
 float ASlashCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	HandleDamage(DamageAmount);
@@ -131,6 +134,7 @@ void ASlashCharacter::SetOverlappingItem(AItem* Item)
 	OverlappingItem = Item;
 }
 
+// Updating "soul" count internally and in the HUD.
 void ASlashCharacter::AddSouls(ASoul* Soul)
 {
 	if (Attributes && SlashOverlay)
@@ -140,6 +144,7 @@ void ASlashCharacter::AddSouls(ASoul* Soul)
 	}
 }
 
+// Updating gold count internally and in the HUD.
 void ASlashCharacter::AddGold(ATreasure* Treasure)
 {
 	if (Attributes && SlashOverlay)
@@ -164,6 +169,7 @@ void ASlashCharacter::EKeyPressed()
 		EquipWeapon(OverlappingWeapon);
 	}
 
+	// Putting weapon on back / hand if not standing on an overlapping weapon that's in the world.
 	else
 	{
 		if (CanDisarm())
