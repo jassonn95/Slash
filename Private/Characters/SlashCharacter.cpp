@@ -155,6 +155,12 @@ void ASlashCharacter::EKeyPressed()
 
 	if (OverlappingWeapon) 
 	{
+		// Destroy equipped weapon (held or holstered) if trying to equip another one.
+		if (EquippedWeapon)
+		{
+			EquippedWeapon->Destroy();
+		}
+
 		EquipWeapon(OverlappingWeapon);
 	}
 
