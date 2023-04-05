@@ -11,6 +11,7 @@ ABreakableActor::ABreakableActor()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
+	// Constructing default components of object.
 	GeometryCollection = CreateDefaultSubobject<UGeometryCollectionComponent>(TEXT("GeometryCollection"));
 	SetRootComponent(GeometryCollection);
 	GeometryCollection->SetGenerateOverlapEvents(true);
@@ -26,7 +27,6 @@ ABreakableActor::ABreakableActor()
 void ABreakableActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void ABreakableActor::GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter)
@@ -35,6 +35,8 @@ void ABreakableActor::GetHit_Implementation(const FVector& ImpactPoint, AActor* 
 	bBroken = true;
 	UWorld* World = GetWorld();
 
+
+	// Spawn a random treasure from array (in BP) when broken.
 	if (World && TreasureClasses.Num() > 0)
 	{
 		FVector Location = GetActorLocation();
@@ -49,5 +51,4 @@ void ABreakableActor::GetHit_Implementation(const FVector& ImpactPoint, AActor* 
 void ABreakableActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
