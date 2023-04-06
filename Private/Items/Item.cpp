@@ -13,14 +13,17 @@ AItem::AItem()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	// Constructing mesh component.
 	ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ItemMeshComponent"));
 	ItemMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	ItemMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	RootComponent = ItemMesh;
 
+	// Constructing sphere component.
 	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
 	Sphere->SetupAttachment(GetRootComponent());
 
+	// Constructing Embers fx component.
 	ItemEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Embers"));
 	ItemEffect->SetupAttachment(GetRootComponent());
 }
@@ -29,17 +32,19 @@ void AItem::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// Linking overlap functions.
 	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AItem::OnSphereOverlap);
 	Sphere->OnComponentEndOverlap.AddDynamic(this, &AItem::OnSphereEndOverlap);
-
 }
 
+// Used for bobbing movement of items.
 float AItem::TransformedSin()
 {
 	float DeltaZ = Amplitude * FMath::Sin(RunningTime * TimeConstant);
 	return DeltaZ;
 }
 
+// Was used for debug, deprecated but leaving for now.
 float AItem::TransformedCos()
 {
 	float DeltaZ = Amplitude * FMath::Cos(RunningTime * TimeConstant);
