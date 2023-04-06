@@ -15,14 +15,17 @@ AEnemy::AEnemy()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	// Constructing mesh.
 	GetMesh()->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 	GetMesh()->SetGenerateOverlapEvents(true);
 
+	// Constructing health bar HUD.
 	HealthBarWidget = CreateDefaultSubobject<UHealthBarComponent>(TEXT("Health Bar"));
 	HealthBarWidget->SetupAttachment(GetRootComponent());
 
+	// Setting character movement settings.
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
@@ -40,6 +43,7 @@ void AEnemy::Tick(float DeltaTime)
 
 	if (IsDead()) return;
 
+	// See CharacterTypes.h for EnemyState enum. Basically checking if Chasing, Attacking or Engaged (in range and preparing to attack / attack recovery).
 	if (EnemyState > EEnemyState::EES_Patrolling)
 	{
 		CheckCombatTarget();
@@ -69,6 +73,7 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 	return DamageAmount;
 }
 
+// Separate function for destroying enemy weapon as it's attached to enemy model on spawn. Otherwise it will linger after enemy mesh destroyed on death.
 void AEnemy::Destroyed()
 {
 	if (EquippedWeapon)
@@ -97,6 +102,7 @@ void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// Initializing in-built Pawn sensing functionality, checking to see if enemy should chase via PawnSeen.
 	if (PawnSensing)
 	{
 		PawnSensing->OnSeePawn.AddDynamic(this, &AEnemy::PawnSeen);
@@ -127,6 +133,7 @@ void AEnemy::SpawnSoul()
 
 	if (World && SoulClass && Attributes)
 	{
+		// Spawning Soul above enemy and higher than the player so we don't get a case where the player is in the Soul's hitbox and immediately picks it up, sometimes causing Soul count to not go up.
 		const FVector SpawnLocation = GetActorLocation() + FVector(0.f, 0.f, 125.f);
 		ASoul* SpawnedSoul = World->SpawnActor<ASoul>(SoulClass, SpawnLocation, GetActorRotation());
 
@@ -182,6 +189,7 @@ void AEnemy::InitializeEnemy()
 	SpawnDefaultWeapon();
 }
 
+// Setting patrol movement using patrol points which are set in UE.
 void AEnemy::CheckPatrolTarget()
 {
 	if (InTargetRange(PatrolTarget, PatrolRadius))
@@ -242,6 +250,7 @@ void AEnemy::ShowHealthBar()
 	}
 }
 
+// Hide enemy health bar when not actively in combat.
 void AEnemy::LoseInterest()
 {
 	CombatTarget = nullptr;
@@ -302,6 +311,7 @@ void AEnemy::ClearPatrolTimer()
 	GetWorldTimerManager().ClearTimer(PatrolTimer);
 }
 
+// Attack timer used so enemy attack wait time can be adjusted, adjusting difficulty.
 void AEnemy::StartAttackTimer()
 {
 	EnemyState = EEnemyState::EES_Attacking;
@@ -319,7 +329,6 @@ bool AEnemy::InTargetRange(AActor* Target, double Radius)
 	if (Target == nullptr) return false;
 	const double DistanceToTarget = (Target->GetActorLocation() - GetActorLocation()).Size();
 	return DistanceToTarget <= Radius;
-
 }
 
 void AEnemy::MoveToTarget(AActor* Target)
@@ -332,6 +341,7 @@ void AEnemy::MoveToTarget(AActor* Target)
 	EnemyController->MoveTo(MoveRequest);
 }
 
+// Randomly choosing patrol points (that are set in UE).
 AActor* AEnemy::ChoosePatrolTarget()
 {
 	TArray<AActor*> ValidTargets;
@@ -354,6 +364,7 @@ AActor* AEnemy::ChoosePatrolTarget()
 	return nullptr;
 }
 
+// Actual weapon specifics are set in UE.
 void AEnemy::SpawnDefaultWeapon()
 {
 	UWorld* World = GetWorld();
@@ -366,6 +377,7 @@ void AEnemy::SpawnDefaultWeapon()
 	}
 }
 
+// Checking to see if Pawn sensed should be chased or not (is player and alive). Also set to not run if already chasing to prevent performance and logic issues.
 void AEnemy::PawnSeen(APawn* SeenPawn)
 {
 	const bool bShouldChaseTarget =

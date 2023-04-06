@@ -73,12 +73,15 @@ private:
 	UPROPERTY(EditAnywhere, Category = Combat)
 	TSubclassOf<class AWeapon> WeaponClass;
 
+	// Leaving this range will cause the enemy to lose interest.
 	UPROPERTY(EditAnywhere, Category = Combat)
 	double CombatRadius = 1000.f;
 
+	// Range required before attacking.
 	UPROPERTY(EditAnywhere, Category = Combat)
 	double AttackRadius = 150.f;
 
+	// Closest enemy can get to player, adjusted for capsule and attacking range tweaking.
 	UPROPERTY(EditAnywhere, Category = Combat)
 	double AcceptanceRadius = 50.f;
 
@@ -92,6 +95,7 @@ private:
 	UPROPERTY(EditInstanceOnly, Category = "AI Navigation")
 	TArray<AActor*> PatrolTargets;
 
+	// Similar to acceptance radius, but for patrol target rather than combat target (goes to patrol target but stops at 200.f range).
 	UPROPERTY(EditAnywhere)
 	double PatrolRadius = 200.f;
 
