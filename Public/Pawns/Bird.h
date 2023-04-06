@@ -14,6 +14,8 @@ class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
 
+// This was used to test basic UE + C++ concepts. Not used for anything in game.
+
 UCLASS()
 class SLASH_API ABird : public APawn
 {

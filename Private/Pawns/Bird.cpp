@@ -10,6 +10,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 
+// This was used to test basic UE + C++ concepts. Not used for anything in game.
+
 // Sets default values
 ABird::ABird()
 {
