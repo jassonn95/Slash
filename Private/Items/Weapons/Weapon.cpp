@@ -12,12 +12,14 @@
 
 AWeapon::AWeapon()
 {
+	// Constructing WeaponBox component (hit box).
 	WeaponBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Weapon Box"));
 	WeaponBox->SetupAttachment(GetRootComponent());
 	WeaponBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	WeaponBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
 	WeaponBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECR_Ignore);
 
+	// Constructing box trace components (used for calculating where to start and end for hitbox).
 	BoxTraceStart = CreateDefaultSubobject<USceneComponent>(TEXT("Box Trace Start"));
 	BoxTraceStart->SetupAttachment(GetRootComponent());
 	BoxTraceEnd = CreateDefaultSubobject<USceneComponent>(TEXT("Box Trace End"));
@@ -28,6 +30,7 @@ void AWeapon::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// Binding overlap functions.
 	WeaponBox->OnComponentBeginOverlap.AddDynamic(this, &AWeapon::OnBoxOverlap);
 }
 
@@ -66,6 +69,7 @@ void AWeapon::PlayEquipSound()
 	}
 }
 
+// Adding weapon mesh to socket on character skeleton mesh (set in UE).
 void AWeapon::AttachMeshToSocket(USceneComponent* InParent, const FName& InSocketName)
 {
 	FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
@@ -89,6 +93,7 @@ void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 	}
 }
 
+// Used to prevent enemies from hitting each other, probably could've been named better.
 bool AWeapon::ActorIsSameType(AActor* OtherActor)
 {
 	return GetOwner()->ActorHasTag(TEXT("Enemy")) && OtherActor->ActorHasTag(TEXT("Enemy"));
@@ -111,6 +116,7 @@ void AWeapon::BoxTrace(FHitResult& BoxHit)
 
 	TArray<AActor*> ActorsToIgnore;
 	ActorsToIgnore.Add(this);
+	// Prevent hitting self due to animations having weapon clip into model.
 	ActorsToIgnore.AddUnique(GetOwner());
 
 	for (AActor* Actor : IgnoreActors)
