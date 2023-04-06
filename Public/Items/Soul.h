@@ -25,6 +25,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Soul Properties")
 	int32 Souls;
 
+	// Height we want the soul to float down to.
 	double DesiredZ;
 
 	UPROPERTY(EditAnywhere, Category = "Soul Properties")
